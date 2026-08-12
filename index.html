@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="FitApp – Kalorienbudget, Aktivitäten und Herzfrequenz im Blick behalten.">
+  <meta name="theme-color" content="#fff7f9">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="FitApp">
+  <title>FitApp</title>
+  <!-- Das Manifest beschreibt die installierbare App für Android und iOS. -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <a class="logo" href="#" aria-label="FitApp Startseite">FitApp</a>
+  </header>
+
+  <main class="app-content">
+    <nav class="day-navigation" aria-label="Tagesansicht wählen">
+      <div class="view-switch">
+        <button id="today-button" class="view-button active" type="button">Heute</button>
+        <button id="calendar-button" class="view-button" type="button" aria-expanded="false">Kalender</button>
+      </div>
+
+      <div id="calendar-picker" class="calendar-picker" hidden>
+        <label for="calendar-date">Tag auswählen</label>
+        <input id="calendar-date" type="date">
+      </div>
+    </nav>
+
+    <p id="selected-day-label" class="selected-day-label">Heute</p>
+    <p id="past-day-note" class="past-day-note" hidden>Vergangene Tage werden nur angezeigt.</p>
+
+    <section class="calorie-summary" aria-labelledby="calorie-heading">
+      <p id="calorie-heading" class="eyebrow">Heute noch verfügbar</p>
+      <p id="calorie-value" class="calorie-value" aria-label="1.490 Kilokalorien">
+        <strong>1.490</strong>
+        <span>kcal</span>
+      </p>
+      <p id="budget-note" class="budget-note">Tagesziel (Schätzwert): 1.490 kcal</p>
+    </section>
+
+    <div class="card-list">
+      <section class="card profile-card" aria-labelledby="profile-heading">
+        <div class="card-heading">
+          <span class="card-icon profile-icon" aria-hidden="true">○</span>
+          <div>
+            <p class="eyebrow">Persönliches Ziel</p>
+            <h2 id="profile-heading">Kalorienziel berechnen</h2>
+          </div>
+        </div>
+
+        <form id="profile-form">
+          <div class="profile-fields">
+            <div class="field">
+              <label for="age">Alter in Jahren</label>
+              <input id="age" name="age" type="number" min="14" max="120" step="1" placeholder="z. B. 30" required>
+            </div>
+
+            <div class="field">
+              <label for="height">Körpergröße in cm</label>
+              <input id="height" name="height" type="number" min="100" max="250" step="1" placeholder="z. B. 170" required>
+            </div>
+
+            <div class="field">
+              <label for="weight">Gewicht in kg</label>
+              <input id="weight" name="weight" type="number" min="30" max="350" step="0.1" placeholder="z. B. 70" required>
+            </div>
+
+            <div class="field">
+              <label for="gender">Geschlecht</label>
+              <select id="gender" name="gender" required>
+                <option value="" selected disabled>Bitte auswählen</option>
+                <option value="male">Männlich</option>
+                <option value="female">Weiblich</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="activity-level">Aktivitätsniveau</label>
+              <select id="activity-level" name="activity-level" required>
+                <option value="" selected disabled>Bitte auswählen</option>
+                <option value="low">Wenig aktiv</option>
+                <option value="light">Leicht aktiv</option>
+                <option value="moderate">Moderat aktiv</option>
+                <option value="high">Sehr aktiv</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="fitness-goal">Mein Ziel</label>
+              <select id="fitness-goal" name="fitness-goal" required>
+                <option value="" selected disabled>Bitte auswählen</option>
+                <option value="lose">Gewicht abnehmen</option>
+                <option value="maintain">Gewicht halten</option>
+                <option value="gain">Muskeln aufbauen</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="profile-note">Das neue Kalorienziel gilt ab heute. Vergangene Tage bleiben unverändert.</p>
+          <button type="submit">Kalorienziel berechnen</button>
+          <p id="profile-message" class="form-message" aria-live="polite"></p>
+        </form>
+
+        <div id="profile-result" class="profile-result" aria-live="polite" hidden>
+          <div class="result-row">
+            <span>Geschätzter Erhaltungsbedarf</span>
+            <strong id="maintenance-result">–</strong>
+          </div>
+          <div class="result-row">
+            <span>Ausgewähltes Ziel</span>
+            <strong id="fitness-goal-result">–</strong>
+          </div>
+          <div class="result-row result-highlight">
+            <span>Geschätztes Tagesziel</span>
+            <strong id="daily-goal-result">–</strong>
+          </div>
+          <p id="goal-effect" class="goal-effect"></p>
+        </div>
+
+        <p class="health-notice">Die Berechnung dient nur als Orientierung und ersetzt keine individuelle medizinische oder ernährungswissenschaftliche Beratung.</p>
+      </section>
+
+      <section class="card" aria-labelledby="meal-heading">
+        <div class="card-heading">
+          <span class="card-icon meal-icon" aria-hidden="true">−</span>
+          <div>
+            <p class="eyebrow">Ernährung</p>
+            <h2 id="meal-heading">Mahlzeit hinzufügen</h2>
+          </div>
+        </div>
+
+        <form id="meal-form">
+          <div class="field">
+            <label for="meal-name">Name der Mahlzeit</label>
+            <input id="meal-name" name="meal-name" type="text" maxlength="60" placeholder="z. B. Frühstück" required>
+          </div>
+
+          <div class="field">
+            <label for="meal-calories">Kalorien der Mahlzeit</label>
+            <div class="input-with-unit">
+              <input id="meal-calories" name="meal-calories" type="number" min="1" step="1" placeholder="z. B. 450" required>
+              <span>kcal</span>
+            </div>
+          </div>
+
+          <button type="submit">Mahlzeit speichern</button>
+          <p id="meal-message" class="form-message" aria-live="polite"></p>
+        </form>
+
+        <div class="day-list">
+          <div class="list-heading">
+            <h3 id="meal-list-heading">Heutige Mahlzeiten</h3>
+            <span id="meal-total">0 kcal</span>
+          </div>
+          <ul id="meal-list" class="entry-list" aria-live="polite">
+            <li class="empty-entry">Noch keine Mahlzeit gespeichert.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="activity-heading">
+        <div class="card-heading">
+          <span class="card-icon" aria-hidden="true">+</span>
+          <div>
+            <p class="eyebrow">Aktivität</p>
+            <h2 id="activity-heading">Sportart hinzufügen</h2>
+          </div>
+        </div>
+
+        <form id="activity-form">
+          <div class="field">
+            <label for="sport">Sportart</label>
+            <select id="sport" name="sport" required>
+              <option value="" selected disabled>Sportart auswählen</option>
+              <option value="laufen">Laufen</option>
+              <option value="radfahren">Radfahren</option>
+              <option value="schwimmen">Schwimmen</option>
+              <option value="krafttraining">Krafttraining</option>
+              <option value="wandern">Wandern</option>
+              <option value="dressurreiten">Dressurreiten</option>
+              <option value="pferd-longieren">Pferd longieren</option>
+              <option value="pferd-striegeln">Pferd striegeln</option>
+              <option value="hausarbeit">Hausarbeit / Putzen</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="duration">Dauer</label>
+            <div class="input-with-unit">
+              <input id="duration" name="duration" type="number" min="1" step="1" placeholder="z. B. 30" required>
+              <span>Minuten</span>
+            </div>
+          </div>
+
+          <p class="field-note">Die Berechnung verwendet durchschnittliche Richtwerte.</p>
+          <button type="submit">Aktivität speichern</button>
+          <p id="activity-message" class="form-message" aria-live="polite"></p>
+        </form>
+
+        <div class="day-list">
+          <div class="list-heading">
+            <h3 id="activity-list-heading">Heutige Aktivitäten</h3>
+            <span id="activity-total">0 kcal</span>
+          </div>
+          <ul id="activity-list" class="entry-list" aria-live="polite">
+            <li class="empty-entry">Noch keine Aktivität gespeichert.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="heart-rate-heading">
+        <div class="card-heading">
+          <span class="card-icon heart-icon" aria-hidden="true">♥</span>
+          <div>
+            <p class="eyebrow">Gesundheit</p>
+            <h2 id="heart-rate-heading">Herzfrequenz</h2>
+          </div>
+        </div>
+
+        <form id="heart-rate-form">
+          <div class="field">
+            <label for="heart-rate">Herzfrequenz manuell eingeben</label>
+            <div class="input-with-unit">
+              <input id="heart-rate" name="heart-rate" type="number" min="30" max="250" step="1" placeholder="z. B. 72" required>
+              <span>BPM</span>
+            </div>
+          </div>
+
+          <button type="submit">Herzfrequenz speichern</button>
+          <p id="heart-rate-message" class="form-message" aria-live="polite"></p>
+        </form>
+
+        <div class="day-list">
+          <div class="list-heading">
+            <h3 id="heart-rate-list-heading">Heutige Herzfrequenz</h3>
+          </div>
+          <ul id="heart-rate-list" class="entry-list" aria-live="polite">
+            <li class="empty-entry">Noch keine Herzfrequenz gespeichert.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
