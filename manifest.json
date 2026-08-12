@@ -1,0 +1,26 @@
+{
+  "name": "FitApp",
+  "short_name": "FitApp",
+  "description": "FitApp hilft beim Überblick über Kalorienbudget, Mahlzeiten, Aktivitäten und Herzfrequenz.",
+  "lang": "de-DE",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff7f9",
+  "theme_color": "#fff7f9",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
