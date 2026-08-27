@@ -1,7 +1,7 @@
 {
   "name": "FitApp",
   "short_name": "FitApp",
-  "description": "FitApp hilft beim Überblick über Kalorienbudget, Mahlzeiten, Aktivitäten und Herzfrequenz.",
+  "description": "FitApp hilft beim Überblick über Kalorienbudget, Mahlzeiten, Aktivitäten, GPS-Routen und persönliche Einnahmepläne.",
   "lang": "de-DE",
   "id": "./index.html",
   "start_url": "./index.html",

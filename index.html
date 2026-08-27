@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="FitApp – Kalorienbudget, Aktivitäten und Herzfrequenz im Blick behalten.">
+  <meta name="description" content="FitApp – Kalorienbudget, Aktivitäten, GPS-Routen und persönliche Einnahmeplanung im Blick behalten.">
   <meta name="theme-color" content="#fff7f9">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,6 +13,7 @@
   <!-- Das Manifest beschreibt die installierbare App für Android und iOS. -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -47,15 +48,31 @@
 
     <div class="card-list">
       <section class="card profile-card" aria-labelledby="profile-heading">
-        <div class="card-heading">
+        <div class="card-heading profile-card-heading">
           <span class="card-icon profile-icon" aria-hidden="true">○</span>
           <div>
             <p class="eyebrow">Persönliches Ziel</p>
             <h2 id="profile-heading">Kalorienziel berechnen</h2>
           </div>
+          <button id="profile-collapse-button" class="profile-toggle-button" type="button" aria-expanded="true" aria-controls="profile-editor">Einklappen</button>
         </div>
 
-        <form id="profile-form">
+        <div id="profile-summary" class="profile-summary" aria-live="polite" hidden>
+          <div class="profile-summary-values">
+            <div>
+              <span>Aktuelles Tagesziel</span>
+              <strong id="profile-summary-goal">1.490 kcal</strong>
+            </div>
+            <div>
+              <span>Fitnessziel</span>
+              <strong id="profile-summary-fitness-goal">–</strong>
+            </div>
+          </div>
+          <button id="profile-edit-button" class="profile-edit-button" type="button" aria-expanded="false" aria-controls="profile-editor">Kalorienziel bearbeiten</button>
+        </div>
+
+        <div id="profile-editor" class="profile-editor">
+          <form id="profile-form">
           <div class="profile-fields">
             <div class="field">
               <label for="age">Alter in Jahren</label>
@@ -106,25 +123,26 @@
           <p class="profile-note">Das neue Kalorienziel gilt ab heute. Vergangene Tage bleiben unverändert.</p>
           <button type="submit">Kalorienziel berechnen</button>
           <p id="profile-message" class="form-message" aria-live="polite"></p>
-        </form>
+          </form>
 
-        <div id="profile-result" class="profile-result" aria-live="polite" hidden>
-          <div class="result-row">
-            <span>Geschätzter Erhaltungsbedarf</span>
-            <strong id="maintenance-result">–</strong>
+          <div id="profile-result" class="profile-result" aria-live="polite" hidden>
+            <div class="result-row">
+              <span>Geschätzter Erhaltungsbedarf</span>
+              <strong id="maintenance-result">–</strong>
+            </div>
+            <div class="result-row">
+              <span>Ausgewähltes Ziel</span>
+              <strong id="fitness-goal-result">–</strong>
+            </div>
+            <div class="result-row result-highlight">
+              <span>Geschätztes Tagesziel</span>
+              <strong id="daily-goal-result">–</strong>
+            </div>
+            <p id="goal-effect" class="goal-effect"></p>
           </div>
-          <div class="result-row">
-            <span>Ausgewähltes Ziel</span>
-            <strong id="fitness-goal-result">–</strong>
-          </div>
-          <div class="result-row result-highlight">
-            <span>Geschätztes Tagesziel</span>
-            <strong id="daily-goal-result">–</strong>
-          </div>
-          <p id="goal-effect" class="goal-effect"></p>
+
+          <p class="health-notice">Die Berechnung dient nur als Orientierung und ersetzt keine individuelle medizinische oder ernährungswissenschaftliche Beratung.</p>
         </div>
-
-        <p class="health-notice">Die Berechnung dient nur als Orientierung und ersetzt keine individuelle medizinische oder ernährungswissenschaftliche Beratung.</p>
       </section>
 
       <section class="card" aria-labelledby="meal-heading">
@@ -174,6 +192,83 @@
           </div>
         </div>
 
+        <section id="gps-sport-area" class="gps-sport-area" aria-labelledby="gps-sport-heading">
+          <div id="gps-setup" class="gps-setup">
+            <div>
+              <p class="eyebrow">GPS-Aufzeichnung</p>
+              <h3 id="gps-sport-heading">Spaziergang oder Lauf aufzeichnen</h3>
+            </div>
+
+            <button id="show-gps-choice" class="gps-start-choice-button" type="button">Sportart starten</button>
+
+            <div id="gps-choice" class="gps-choice" hidden>
+              <fieldset>
+                <legend>Sportart auswählen</legend>
+                <div class="gps-sport-options">
+                  <label class="gps-sport-option">
+                    <input type="radio" name="gps-sport" value="walking">
+                    <span>Spazieren / Gehen</span>
+                  </label>
+                  <label class="gps-sport-option">
+                    <input type="radio" name="gps-sport" value="running">
+                    <span>Laufen</span>
+                  </label>
+                </div>
+              </fieldset>
+              <button id="start-gps-tracking" type="button" disabled>Tracking starten</button>
+            </div>
+
+            <p id="gps-setup-message" class="form-message gps-message" aria-live="polite"></p>
+            <p class="gps-background-note">Hinweis: Zuverlässiges Tracking bei gesperrtem Bildschirm oder vollständig geschlossener App ist erst in einer späteren nativen Version verfügbar. Lass diese PWA während der Aufzeichnung geöffnet.</p>
+          </div>
+
+          <div id="gps-tracking-panel" class="gps-tracking-panel" hidden>
+            <div class="tracking-header">
+              <div>
+                <p class="eyebrow">Live-Tracking</p>
+                <h3 id="tracking-sport-name">–</h3>
+              </div>
+              <span id="tracking-status" class="tracking-status">GPS wird gesucht …</span>
+            </div>
+
+            <div class="tracking-primary-values">
+              <div class="tracking-value tracking-time-value">
+                <span>Zeit</span>
+                <strong id="tracking-time">00:00:00</strong>
+              </div>
+              <div class="tracking-value">
+                <span>Strecke</span>
+                <strong><b id="tracking-distance">0,00</b> km</strong>
+              </div>
+            </div>
+
+            <div class="tracking-secondary-values">
+              <div class="tracking-value">
+                <span>Aktuell</span>
+                <strong><b id="tracking-current-speed">0,0</b> km/h</strong>
+              </div>
+              <div class="tracking-value">
+                <span>Durchschnitt</span>
+                <strong><b id="tracking-average-speed">0,0</b> km/h</strong>
+              </div>
+              <div class="tracking-value">
+                <span>Geschätzte Kalorien</span>
+                <strong id="tracking-calories">– kcal</strong>
+              </div>
+            </div>
+
+            <p id="tracking-weight-note" class="tracking-note" hidden>Für die Kalorienschätzung zuerst das Gewicht im Profil hinterlegen. Das GPS-Tracking funktioniert trotzdem.</p>
+            <p id="tracking-message" class="form-message gps-message" aria-live="polite"></p>
+
+            <div id="live-route-map" class="route-map live-route-map" role="img" aria-label="Karte der aktuellen GPS-Route"></div>
+
+            <div class="tracking-actions">
+              <button id="pause-gps-tracking" class="secondary-button" type="button">Pausieren</button>
+              <button id="stop-gps-tracking" class="stop-tracking-button" type="button">Sportart beenden</button>
+            </div>
+          </div>
+        </section>
+
         <form id="activity-form">
           <div class="field">
             <label for="sport">Sportart</label>
@@ -188,6 +283,10 @@
               <option value="pferd-longieren">Pferd longieren</option>
               <option value="pferd-striegeln">Pferd striegeln</option>
               <option value="hausarbeit">Hausarbeit / Putzen</option>
+              <option value="tischtennis">Tischtennis</option>
+              <option value="tennis">Tennis</option>
+              <option value="spazieren-gehen">Spazieren gehen</option>
+              <option value="tanzen">Tanzen</option>
             </select>
           </div>
 
@@ -215,40 +314,119 @@
         </div>
       </section>
 
-      <section class="card" aria-labelledby="heart-rate-heading">
+      <section id="intake-card" class="card intake-card" aria-labelledby="intake-heading">
         <div class="card-heading">
-          <span class="card-icon heart-icon" aria-hidden="true">♥</span>
+          <span class="card-icon intake-icon" aria-hidden="true">◷</span>
           <div>
-            <p class="eyebrow">Gesundheit</p>
-            <h2 id="heart-rate-heading">Herzfrequenz</h2>
+            <p class="eyebrow">Organisation</p>
+            <h2 id="intake-heading">Einnahmeplan</h2>
           </div>
         </div>
 
-        <form id="heart-rate-form">
+        <p class="intake-safety-note">Dieser Bereich dokumentiert ausschließlich deine eigenen Einträge. FitApp empfiehlt keine Dosierungen, prüft keine Wechselwirkungen und trifft keine medizinischen Entscheidungen.</p>
+
+        <div class="push-reminder-panel">
+          <div>
+            <h3>Push-Erinnerungen</h3>
+            <p id="push-reminder-status" class="push-reminder-status" aria-live="polite">Push-Erinnerungen sind vorbereitet, benötigen aber noch den Benachrichtigungsdienst.</p>
+          </div>
+          <button id="enable-push-reminders" class="secondary-button" type="button">Erinnerungen aktivieren</button>
+        </div>
+
+        <form id="intake-plan-form">
+          <input id="intake-plan-id" type="hidden">
+
           <div class="field">
-            <label for="heart-rate">Herzfrequenz manuell eingeben</label>
-            <div class="input-with-unit">
-              <input id="heart-rate" name="heart-rate" type="number" min="30" max="250" step="1" placeholder="z. B. 72" required>
-              <span>BPM</span>
+            <label for="intake-name">Name des Supplements oder Medikaments</label>
+            <input id="intake-name" type="text" maxlength="100" autocomplete="off" required>
+          </div>
+
+          <div class="intake-form-grid">
+            <div class="field">
+              <label for="intake-type">Typ</label>
+              <select id="intake-type" required>
+                <option value="supplement">Supplement</option>
+                <option value="medication">Medikament</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="intake-time">Geplante Uhrzeit</label>
+              <input id="intake-time" type="time" required>
+            </div>
+
+            <div class="field">
+              <label for="intake-start-date">Datum / Startdatum</label>
+              <input id="intake-start-date" type="date" required>
+            </div>
+
+            <div class="field">
+              <label for="intake-recurrence">Wiederholung</label>
+              <select id="intake-recurrence" required>
+                <option value="once">Einmalig</option>
+                <option value="daily">Täglich</option>
+                <option value="weekdays">Bestimmte Wochentage</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="intake-end-date">Enddatum (optional)</label>
+              <input id="intake-end-date" type="date">
             </div>
           </div>
 
-          <button type="submit">Herzfrequenz speichern</button>
-          <p id="heart-rate-message" class="form-message" aria-live="polite"></p>
+          <fieldset id="intake-weekdays-field" class="intake-weekdays" hidden>
+            <legend>Wochentage auswählen</legend>
+            <div class="weekday-options">
+              <label><input type="checkbox" name="intake-weekday" value="1"><span>Mo</span></label>
+              <label><input type="checkbox" name="intake-weekday" value="2"><span>Di</span></label>
+              <label><input type="checkbox" name="intake-weekday" value="3"><span>Mi</span></label>
+              <label><input type="checkbox" name="intake-weekday" value="4"><span>Do</span></label>
+              <label><input type="checkbox" name="intake-weekday" value="5"><span>Fr</span></label>
+              <label><input type="checkbox" name="intake-weekday" value="6"><span>Sa</span></label>
+              <label><input type="checkbox" name="intake-weekday" value="0"><span>So</span></label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label for="intake-note">Eigene Notiz (optional)</label>
+            <textarea id="intake-note" maxlength="240" rows="3" placeholder="z. B. nach dem Frühstück"></textarea>
+          </div>
+
+          <div class="intake-form-actions">
+            <button id="save-intake-plan" type="submit">Einnahmeplan speichern</button>
+            <button id="cancel-intake-edit" class="secondary-button" type="button" hidden>Bearbeiten abbrechen</button>
+          </div>
+          <p id="intake-form-message" class="form-message" aria-live="polite"></p>
         </form>
 
-        <div class="day-list">
-          <div class="list-heading">
-            <h3 id="heart-rate-list-heading">Heutige Herzfrequenz</h3>
+        <div class="day-list intake-day-list">
+          <div class="list-heading intake-list-heading">
+            <h3 id="intake-day-heading">Heutige Einnahmen</h3>
+            <span id="intake-day-status">0 geplant</span>
           </div>
-          <ul id="heart-rate-list" class="entry-list" aria-live="polite">
-            <li class="empty-entry">Noch keine Herzfrequenz gespeichert.</li>
+          <ul id="intake-day-list" class="entry-list intake-entry-list" aria-live="polite">
+            <li class="empty-entry">Für diesen Tag ist keine Einnahme geplant.</li>
           </ul>
         </div>
+
+        <div class="day-list intake-plan-overview">
+          <div class="list-heading">
+            <h3>Alle Einnahmepläne</h3>
+            <span id="intake-plan-count">0 Pläne</span>
+          </div>
+          <ul id="intake-plan-list" class="entry-list" aria-live="polite">
+            <li class="empty-entry">Noch kein Einnahmeplan gespeichert.</li>
+          </ul>
+        </div>
+
+        <p class="intake-privacy-note">Einnahmenamen, Notizen und Zeiten bleiben als private Daten lokal in diesem Browser. Push-Nachrichten verwenden ausschließlich den neutralen Text „Es ist Zeit für deine Einnahme“.</p>
       </section>
+
     </div>
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

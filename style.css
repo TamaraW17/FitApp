@@ -202,17 +202,6 @@ body {
   line-height: 1;
 }
 
-.heart-icon {
-  font-size: 1.15rem;
-}
-
-.heart-rate-value {
-  flex: 0 0 auto;
-  color: #a35f70;
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
 .meal-icon {
   color: #a35f70;
   background: #fae9ed;
@@ -223,6 +212,91 @@ body {
   background: #f8e9ee;
   font-size: 1.3rem;
   font-weight: 700;
+}
+
+.profile-card-heading {
+  flex-wrap: wrap;
+}
+
+.profile-card-heading > div {
+  min-width: 0;
+}
+
+.profile-card.is-collapsed .profile-card-heading {
+  margin-bottom: 18px;
+}
+
+.profile-toggle-button {
+  width: auto;
+  min-height: 36px;
+  margin: 0 0 0 auto;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--background);
+  font-size: 0.76rem;
+}
+
+.profile-toggle-button:hover {
+  color: var(--text);
+  background: #ffffff;
+}
+
+.profile-editor,
+.profile-summary {
+  animation: profile-reveal 180ms ease-out;
+}
+
+.profile-summary {
+  display: grid;
+  gap: 18px;
+}
+
+.profile-summary-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.profile-summary-values > div {
+  display: grid;
+  gap: 5px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--background);
+}
+
+.profile-summary-values span {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+
+.profile-summary-values strong {
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.profile-summary-values > div:first-child strong {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.profile-edit-button {
+  margin: 0;
+}
+
+@keyframes profile-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .profile-fields {
@@ -419,6 +493,505 @@ h3 {
   color: var(--primary);
 }
 
+.intake-icon {
+  color: #8d6170;
+  background: #f8e9ee;
+  font-size: 1.25rem;
+}
+
+.intake-safety-note,
+.intake-privacy-note {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--muted);
+  background: var(--background);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.push-reminder-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin: 22px 0 26px;
+  padding: 16px;
+  border: 1px solid #dcebe3;
+  border-radius: 16px;
+  background: var(--primary-soft);
+}
+
+.push-reminder-panel h3 {
+  margin-bottom: 5px;
+}
+
+.push-reminder-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.push-reminder-status.is-error {
+  color: #9b4459;
+}
+
+.push-reminder-panel button {
+  width: auto;
+  min-width: 180px;
+  margin: 0;
+}
+
+.intake-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.intake-weekdays {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.intake-weekdays legend {
+  margin-bottom: 9px;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.weekday-options {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.weekday-options label {
+  position: relative;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.weekday-options input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 1px;
+  opacity: 0;
+}
+
+.weekday-options span {
+  display: grid;
+  min-height: 42px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  background: #fbfcfb;
+  font-size: 0.76rem;
+}
+
+.weekday-options input:checked + span {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 2px rgba(52, 120, 92, 0.1);
+}
+
+.weekday-options input:focus-visible + span {
+  outline: 3px solid rgba(52, 120, 92, 0.25);
+  outline-offset: 2px;
+}
+
+.intake-form-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.intake-form-actions button {
+  margin: 0;
+}
+
+.intake-list-heading {
+  align-items: flex-start;
+}
+
+.intake-entry {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  transition: opacity 160ms ease, box-shadow 160ms ease;
+}
+
+.intake-entry.is-completed {
+  opacity: 0.68;
+}
+
+.intake-entry.is-targeted {
+  box-shadow: 0 0 0 3px rgba(52, 120, 92, 0.22);
+}
+
+.intake-time {
+  min-width: 54px;
+  color: var(--primary-dark);
+  font-size: 1rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.intake-entry.is-completed .entry-details strong {
+  text-decoration: line-through;
+}
+
+.intake-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.intake-type-badge,
+.intake-status-badge {
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #8d6170 !important;
+  background: #f8e9ee;
+  font-size: 0.68rem !important;
+  font-weight: 700;
+}
+
+.intake-status-badge {
+  color: var(--primary-dark) !important;
+  background: var(--primary-soft);
+}
+
+.intake-note-text,
+.intake-confirmed-at {
+  line-height: 1.45;
+}
+
+.intake-confirm-button {
+  width: auto;
+  min-width: 100px;
+  min-height: 40px;
+  margin: 0;
+  padding: 0 12px;
+  font-size: 0.76rem;
+}
+
+.intake-confirm-button.is-undo {
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: #ffffff;
+}
+
+.intake-plan-entry {
+  align-items: flex-start;
+}
+
+.intake-plan-schedule {
+  line-height: 1.45;
+}
+
+.intake-plan-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.intake-edit-button {
+  width: auto;
+  min-height: 32px;
+  margin: 0;
+  padding: 0 10px;
+  border: 1px solid #cddfd5;
+  color: var(--primary-dark);
+  background: #ffffff;
+  font-size: 0.75rem;
+}
+
+.intake-privacy-note {
+  margin-top: 24px;
+}
+
+.gps-sport-area {
+  margin-bottom: 28px;
+  padding: 22px;
+  border: 1px solid #dcebe3;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f7fbf9, var(--primary-soft));
+}
+
+.gps-setup {
+  display: grid;
+  gap: 18px;
+}
+
+.gps-start-choice-button {
+  margin: 0;
+  box-shadow: 0 8px 20px rgba(52, 120, 92, 0.18);
+}
+
+.gps-choice {
+  display: grid;
+  gap: 16px;
+}
+
+.gps-choice fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.gps-choice legend {
+  margin-bottom: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.gps-sport-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gps-sport-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.gps-sport-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.gps-sport-option span {
+  display: grid;
+  min-height: 58px;
+  padding: 10px 12px;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  text-align: center;
+  font-size: 0.85rem;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.gps-sport-option input:checked + span {
+  border-color: var(--primary);
+  background: #f5fbf8;
+  box-shadow: 0 0 0 3px rgba(52, 120, 92, 0.12);
+}
+
+.gps-sport-option input:focus-visible + span {
+  outline: 3px solid rgba(52, 120, 92, 0.25);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.gps-background-note,
+.tracking-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.gps-message {
+  min-height: 0;
+  margin: 0;
+}
+
+.gps-message:empty {
+  display: none;
+}
+
+.gps-message.is-error {
+  color: #9b4459;
+}
+
+.gps-tracking-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.tracking-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tracking-status {
+  max-width: 48%;
+  padding: 6px 9px;
+  border-radius: 999px;
+  color: var(--primary-dark);
+  background: rgba(255, 255, 255, 0.72);
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.tracking-primary-values,
+.tracking-secondary-values {
+  display: grid;
+  gap: 10px;
+}
+
+.tracking-primary-values {
+  grid-template-columns: 1.35fr 1fr;
+}
+
+.tracking-secondary-values {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.tracking-value {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(220, 235, 227, 0.9);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.tracking-value span {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.tracking-value strong {
+  color: var(--text);
+  font-size: 1.08rem;
+  line-height: 1.15;
+}
+
+.tracking-primary-values .tracking-value strong {
+  color: var(--primary-dark);
+  font-size: clamp(1.45rem, 5vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.tracking-value strong b {
+  font: inherit;
+}
+
+.tracking-time-value strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.route-map {
+  z-index: 0;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #e9efeb;
+}
+
+.live-route-map {
+  height: clamp(240px, 45vh, 340px);
+}
+
+.route-map-unavailable {
+  display: grid;
+  padding: 20px;
+  place-items: center;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.tracking-actions {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.7fr) 1.3fr;
+  gap: 10px;
+}
+
+.secondary-button {
+  border: 1px solid #cddfd5;
+  color: var(--primary-dark);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.secondary-button:hover {
+  background: #ffffff;
+}
+
+.stop-tracking-button {
+  background: #a6465b;
+  box-shadow: 0 8px 20px rgba(166, 70, 91, 0.18);
+}
+
+.stop-tracking-button:hover {
+  background: #873749;
+}
+
+.gps-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.gps-entry-summary {
+  display: grid;
+  gap: 4px;
+}
+
+.gps-entry-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.gps-badge {
+  width: fit-content;
+  margin-top: 3px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: var(--primary-dark) !important;
+  background: var(--primary-soft);
+  font-size: 0.68rem !important;
+  font-weight: 700;
+}
+
+.route-toggle-button {
+  width: auto;
+  min-height: 34px;
+  margin: 8px 0 0;
+  padding: 0 11px;
+  border: 1px solid #cddfd5;
+  color: var(--primary-dark);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.76rem;
+}
+
+.route-toggle-button:hover {
+  background: #ffffff;
+}
+
+.saved-route-wrap {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin-top: 12px;
+}
+
 .empty-entry {
   padding: 10px 0 2px;
 }
@@ -440,6 +1013,7 @@ label {
 
 input,
 select,
+textarea,
 button {
   width: 100%;
   min-height: 50px;
@@ -449,7 +1023,8 @@ button {
 }
 
 input,
-select {
+select,
+textarea {
   border: 1px solid var(--border);
   outline: none;
   color: var(--text);
@@ -465,8 +1040,16 @@ select {
   padding: 0 15px;
 }
 
+textarea {
+  min-height: 88px;
+  padding: 13px 15px;
+  resize: vertical;
+  font: inherit;
+}
+
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(52, 120, 92, 0.12);
 }
@@ -551,6 +1134,7 @@ button:focus-visible {
 
   input,
   select,
+  textarea,
   button {
     min-height: 52px;
     font-size: 1rem;
@@ -558,6 +1142,57 @@ button:focus-visible {
 
   .profile-fields {
     grid-template-columns: 1fr;
+  }
+
+  .intake-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .push-reminder-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .push-reminder-panel button {
+    width: 100%;
+  }
+
+  .intake-entry {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .intake-entry .intake-confirm-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .intake-plan-entry {
+    flex-direction: column;
+  }
+
+  .intake-plan-actions {
+    width: 100%;
+  }
+
+  .intake-plan-actions button {
+    flex: 1 1 0;
+  }
+
+  .profile-summary-values {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-toggle-button {
+    grid-column: 2;
+    width: auto;
+    min-height: 40px;
+    margin: 0;
+    justify-self: start;
+    font-size: 0.82rem;
+  }
+
+  .profile-card-heading {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
   }
 
   .profile-wide-field {
@@ -583,6 +1218,33 @@ button:focus-visible {
     align-items: flex-end;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .gps-sport-area {
+    margin-right: -4px;
+    margin-left: -4px;
+    padding: 18px;
+  }
+
+  .tracking-secondary-values {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tracking-secondary-values .tracking-value:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .tracking-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .stop-tracking-button {
+    grid-row: 1;
+    min-height: 58px;
+  }
+
+  .gps-entry .entry-actions {
+    align-items: flex-end;
   }
 
   .delete-button {
@@ -620,5 +1282,37 @@ button:focus-visible {
     align-items: center;
     justify-content: space-between;
     flex-direction: row;
+  }
+
+  .gps-sport-options,
+  .tracking-primary-values {
+    grid-template-columns: 1fr;
+  }
+
+  .gps-entry {
+    grid-template-columns: 1fr;
+  }
+
+  .gps-entry .entry-actions {
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .weekday-options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .intake-form-actions {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-editor,
+  .profile-summary {
+    animation: none;
   }
 }
